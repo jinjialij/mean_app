@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { Post } from '../post-list/post.model';
 import { HttpClient } from '@angular/common/http';
 import { Subject } from 'rxjs';
+import { map } from 'rxjs/operators';
 
 /**
  * This service pass post data
@@ -21,9 +22,18 @@ export class PostService {
   constructor(private http: HttpClient) { }
 
   getPosts() {
-    this.http.get<{ message: string, posts: Post[] }>('http://localhost:3000/api/posts')
-      .subscribe((data) => {
-        this.posts = data.posts;
+    this.http.get<{ message: string, posts: any }>('http://localhost:3000/api/posts')
+      .pipe(map((data) => {
+        return data.posts.map(post => {
+          return {
+            title: post.title,
+            content: post.content,
+            id: post._id
+          }
+        });
+      }))
+      .subscribe((mapedPosts) => {
+        this.posts = mapedPosts;
         //inform the app and other part of the app about this update
         this.postUpdated.next([...this.posts]);
       });
