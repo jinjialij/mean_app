@@ -2,6 +2,17 @@ const { request } = require("http");
 
 const express = require('express');
 const bodyParser = require('body-parser');
+const mongoose = require('mongoose');
+
+const Post = require('./models/post');
+
+mongoose.connect("mongodb+srv://jin:IY9Pu4I3c2ofK2Ri@cluster0.ezdae.mongodb.net/SIMPLE-POST?retryWrites=true&w=majority", {useNewUrlParser: true, useUnifiedTopology: true })
+.then(()=>{
+  console.log("Connect to database successfully!");
+})
+.catch(()=>{
+  console.log("Connection failed!");
+});
 
 const app = express();
 
@@ -16,7 +27,10 @@ app.use((req, res, next) => {
 });
 
 app.post("/api/posts", (req, res, next) => {
-  const post = req.body;
+  const post = new Post({
+    title: req.body.title,
+    content: req.body.content
+  });
   console.log(post);
   res.status(201).json({
     message:'Post added successfully'
