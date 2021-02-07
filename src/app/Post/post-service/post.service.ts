@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Post } from '../post-list/post.model';
+import {HttpClient} from '@angular/common/http';
 import { Subject } from 'rxjs';
 
 /**
@@ -17,10 +18,16 @@ export class PostService {
    */
   private postUpdated = new Subject<Post[]>();
 
-  constructor() { }
+  constructor(private http : HttpClient) { }
 
   //no longer useful when the postUpdated is added
   getPosts(){
+    this.http.get<{message:string, posts:Post[]}>('http://localhost:3000/api/posts')
+    .subscribe((data)=>{
+      this.posts = data.posts;
+      //inform the app and other part of the app about this update
+      this.postUpdated.next([...this.posts]);
+    });
     /*
     since array and objects are reference types(address),
     don't return this.posts directly.
@@ -36,7 +43,7 @@ export class PostService {
   }
 
   addPost(title:string, content:string){
-    const post:Post = {title:title, content: content};
+    const post:Post = {id:null, title:title, content: content};
     this.posts.push(post);
     //feed values
     //a copy of updated posts
