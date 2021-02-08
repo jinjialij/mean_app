@@ -93,7 +93,7 @@ export class PostService {
   }
 
   deletePost(postId: string) {
-    this.http.delete("http://localhost:3000/api/posts/'" + postId)
+    this.http.delete("http://localhost:3000/api/posts/" + postId)
       .subscribe(() => {
         const updatePosts = this.posts.filter(post => post.id !== postId);
         this.posts = updatePosts;
