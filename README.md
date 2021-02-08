@@ -2,6 +2,8 @@
 
 This branch is used to deploy the host a RESTful Node.js server with MongoDB Atlas database on Heroku. It is the backend of the Simple Post App.
 
+The App URL[https://simple-post-202101.herokuapp.com/api/posts]
+
 ## Useful resources
 
 Useful docs to host on Heroku:
