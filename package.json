@@ -8,7 +8,7 @@
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e",
-    "postinstall": "ngcc",
+    "postinstall": "ng build --output-path dist",
     "start:server": "nodemon server.js"
   },
   "private": true,
