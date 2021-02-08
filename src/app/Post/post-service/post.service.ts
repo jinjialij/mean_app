@@ -3,6 +3,7 @@ import { Post } from '../post-list/post.model';
 import { HttpClient } from '@angular/common/http';
 import { Subject } from 'rxjs';
 import { map } from 'rxjs/operators';
+import { PortalHostDirective } from '@angular/cdk/portal';
 
 /**
  * This service pass post data
@@ -46,6 +47,11 @@ export class PostService {
     return [...this.posts];
   }
 
+  //retrieve a post according to postId
+  getPost(postId:string){
+    return {...this.posts.find(p => p.id === postId)};
+  }
+
   //Access updated posts but can't emit outside this service
   getPostUpdateListener() {
     return this.postUpdated.asObservable();
@@ -66,8 +72,14 @@ export class PostService {
       });
   }
 
+  updatePost(id:string, title: string, content: string){
+    const post: Post = { id: id, title: title, content: content};
+    this.http.put("http://localhost:3000/api/posts/"+id, post)
+    .subscribe(response => console.log(response));
+  }
+
   deletePost(postId: string) {
-    this.http.delete('http://localhost:3000/api/posts/' + postId)
+    this.http.delete("http://localhost:3000/api/posts/'"+ postId)
       .subscribe(() => {
         const updatePosts = this.posts.filter(post => post.id !== postId);
         this.posts = updatePosts;
