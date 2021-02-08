@@ -47,9 +47,15 @@ export class PostService {
     return [...this.posts];
   }
 
-  //retrieve a post according to postId
-  getPost(postId:string){
-    return {...this.posts.find(p => p.id === postId)};
+  //retrieve a post by postId
+  getPost(postId: string) {
+    /*Notes: this return post makes get post returns a post,
+    it won't work anymore because if it makes a http call here,
+    that'll be an asynchronous code.
+    you can't return inside of a subscription, you need to return synchronously
+    so that means you can't return in a place which will run sometime in the future. */
+    // return { ...this.posts.find(p => p.id === postId) };
+    return this.http.get<{_id: string, title: string, content: string}>("http://localhost:3000/api/posts/" + postId);
   }
 
   //Access updated posts but can't emit outside this service
@@ -72,14 +78,22 @@ export class PostService {
       });
   }
 
-  updatePost(id:string, title: string, content: string){
-    const post: Post = { id: id, title: title, content: content};
-    this.http.put("http://localhost:3000/api/posts/"+id, post)
-    .subscribe(response => console.log(response));
+  updatePost(id: string, title: string, content: string) {
+    const newVersionPost: Post = { id: id, title: title, content: content };
+    this.http.put("http://localhost:3000/api/posts/" + id, newVersionPost)
+      .subscribe(response => {
+        console.log(response)
+        //to update the post on the frontend
+        // const updatedPosts = [...this.posts];
+        // const oldPostIndex = updatedPosts.findIndex(p=> p.id === newVersionPost.id);
+        // updatedPosts[oldPostIndex] = newVersionPost;
+        // this.posts = updatedPosts;
+        // this.postUpdated.next([...this.posts]);
+      });
   }
 
   deletePost(postId: string) {
-    this.http.delete("http://localhost:3000/api/posts/'"+ postId)
+    this.http.delete("http://localhost:3000/api/posts/'" + postId)
       .subscribe(() => {
         const updatePosts = this.posts.filter(post => post.id !== postId);
         this.posts = updatePosts;

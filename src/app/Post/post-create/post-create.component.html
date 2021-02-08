@@ -2,12 +2,14 @@
   <form (submit)="onSavePost(postForm)" #postForm="ngForm">
     <mat-form-field>
       <input matInput placeholder="Post Title" type="text"
-      [ngModel]="post.title" name="title" required #title="ngModel">
+      [ngModel]="post?.title" name="title" required #title="ngModel">
       <mat-error *ngIf="title.invalid">Please enter a title</mat-error>
     </mat-form-field>
     <mat-form-field>
+      <!-- Note: [ngModel]="post?.content"
+        the ? let angular check if post exists instead of loading empty value directly -->
       <textarea matInput placeholder="Post content here" rows="6"
-      [ngModel]="post.content" name="content" required #content="ngModel"></textarea>
+      [ngModel]="post?.content" name="content" required #content="ngModel"></textarea>
       <mat-error *ngIf="content.invalid">Please enter content</mat-error>
     </mat-form-field>
     <button type="submit" mat-raised-button color="primary">Save Post</button>

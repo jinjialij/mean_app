@@ -58,6 +58,7 @@ app.put("/api/posts/:id", (req, res, next)=>{
   });
 });
 
+//get all posts
 app.get('/api/posts', (req, res, next) => {
   Post.find().then((documents) => {
     console.log(documents);
@@ -67,6 +68,17 @@ app.get('/api/posts', (req, res, next) => {
       posts: documents
     });
   });
+});
+
+//get post by id
+app.get("/api/posts/:id", (req, res, next) => {
+  Post.findById(req.params.id).then(post => {
+    if (post) {
+      res.status(200).json(post);
+    } else {
+      res.status(404).json({message: "Post not found!"});
+    }
+  })
 });
 
 app.delete("/api/posts/:id", (req, res, next) => {
