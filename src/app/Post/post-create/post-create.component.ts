@@ -19,6 +19,7 @@ enum Mode {
 export class PostCreateComponent implements OnInit {
   constructor(public postservice:PostService, public route: ActivatedRoute) { }
   post: Post;
+  isLoading = false;
   private mode = Mode.Create;
   private postId:string;
 
@@ -31,8 +32,10 @@ export class PostCreateComponent implements OnInit {
       if(paramMap.has('postId')) {
         this.mode = Mode.Edit;
         this.postId = paramMap.get('postId');
+        this.isLoading = true;
         this.postservice.getPost(this.postId)
         .subscribe(postData=>{
+          this.isLoading = false;
           this.post = {id: postData._id, title: postData.title, content: postData.content};
         });
       } else {
@@ -44,6 +47,7 @@ export class PostCreateComponent implements OnInit {
 
   onSavePost(form:NgForm) {
     if (!form.valid){ return; }
+    this.isLoading = true;
     if (this.mode === Mode.Create){
       this.postservice.addPost(form.value.title, form.value.content);
     } else {

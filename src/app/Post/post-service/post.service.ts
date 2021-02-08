@@ -3,10 +3,10 @@ import { Post } from '../post-list/post.model';
 import { HttpClient } from '@angular/common/http';
 import { Subject } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { PortalHostDirective } from '@angular/cdk/portal';
+import { Router } from "@angular/router";
 
 /**
- * This service pass post data
+ * This service handles get, update, delete post data
  */
 
 @Injectable({
@@ -20,7 +20,7 @@ export class PostService {
    */
   private postUpdated = new Subject<Post[]>();
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient, private router: Router) { }
 
   getPosts() {
     this.http.get<{ message: string, posts: any }>('http://localhost:3000/api/posts')
@@ -75,6 +75,7 @@ export class PostService {
 
         //a copy of updated posts
         this.postUpdated.next([...this.posts]);
+        this.router.navigate(["/"]);
       });
   }
 
@@ -89,6 +90,7 @@ export class PostService {
         // updatedPosts[oldPostIndex] = newVersionPost;
         // this.posts = updatedPosts;
         // this.postUpdated.next([...this.posts]);
+        this.router.navigate(["/"]);
       });
   }
 
