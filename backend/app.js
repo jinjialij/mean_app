@@ -3,10 +3,14 @@ const { request } = require("http");
 const express = require('express');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
+const dotenv = require("dotenv");
 
 const Post = require('./models/post');
 
-mongoose.connect("mongodb+srv://jin:IY9Pu4I3c2ofK2Ri@cluster0.ezdae.mongodb.net/SIMPLE-POST?retryWrites=true&w=majority", { useNewUrlParser: true, useUnifiedTopology: true })
+dotenv.config();
+const connectionString = `mongodb+srv://${process.env.DB_USERNAME}:${process.env.DB_PASSWORD}@cluster0.ezdae.mongodb.net/SIMPLE-POST?retryWrites=true&w=majority`;
+
+mongoose.connect(connectionString, { useNewUrlParser: true, useUnifiedTopology: true })
   .then(() => {
     console.log("Connect to database successfully!");
   })
