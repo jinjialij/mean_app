@@ -17,6 +17,9 @@
       <button mat-stroked-button type="button" (click)="filePick.click()" >Pick image</button>
       <input type="file" #filePick (change)="onImagePicked($event)" id="filePicker">
     </div>
+    <div class="image-preview" *ngIf="imagePreview!== '' && imagePreview">
+      <img [src]="imagePreview" [alt]="form.get('title').value">
+    </div>
     <button type="submit" mat-raised-button color="primary">Save Post</button>
   </form>
 
