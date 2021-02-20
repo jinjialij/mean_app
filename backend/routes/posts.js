@@ -83,7 +83,7 @@ router.get("", (req, res, next) => {
     console.log(documents);
     fetchedPosts = documents;
     //send back response to client
-    return Post.count();
+    return Post.estimatedDocumentCount();
   })
   .then(count => {
     res.status(200).json({
