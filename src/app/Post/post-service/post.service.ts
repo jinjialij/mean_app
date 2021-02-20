@@ -66,12 +66,15 @@ export class PostService {
     return this.postUpdated.asObservable();
   }
 
-  addPost(title: string, content: string) {
-    const post: Post = { id: null, title: title, content: content };
-    this.http.post<{ message: string, postId: string }>(BACKEND_URL, post)
+  addPost(title: string, content: string, image: File) {
+    const postData = new FormData();
+    postData.append("title", title);
+    postData.append("content", content);
+    postData.append("image", image, title);
+    this.http.post<{ message: string, postId: string }>(BACKEND_URL, postData)
       .subscribe(data => {
         console.log(data.message);
-        post.id = data.postId;
+        const post: Post = { id: data.postId, title: title, content: content };
         //update local data when receive a successful response
         //push:feed values
         this.posts.push(post);
