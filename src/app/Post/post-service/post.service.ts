@@ -32,7 +32,8 @@ export class PostService {
           return {
             title: post.title,
             content: post.content,
-            id: post._id
+            id: post._id,
+            imagePath: post.imagePath
           }
         });
       }))
@@ -71,10 +72,10 @@ export class PostService {
     postData.append("title", title);
     postData.append("content", content);
     postData.append("image", image, title);
-    this.http.post<{ message: string, postId: string }>(BACKEND_URL, postData)
+    this.http.post<{ message: string, post: Post }>(BACKEND_URL, postData)
       .subscribe(data => {
         console.log(data.message);
-        const post: Post = { id: data.postId, title: title, content: content };
+        const post: Post = { id: data.post.id, title: title, content: content, imagePath: data.post.imagePath };
         //update local data when receive a successful response
         //push:feed values
         this.posts.push(post);
@@ -86,7 +87,7 @@ export class PostService {
   }
 
   updatePost(id: string, title: string, content: string) {
-    const newVersionPost: Post = { id: id, title: title, content: content };
+    const newVersionPost: Post = { id: id, title: title, content: content, imagePath: null };
     this.http.put(BACKEND_URL + id, newVersionPost)
       .subscribe(response => {
         console.log(response)
