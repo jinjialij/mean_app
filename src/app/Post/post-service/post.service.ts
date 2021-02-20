@@ -21,26 +21,31 @@ export class PostService {
     Subject is a special type of Observable that allows values to be multicasted to many Observers.
     Subjects are like EventEmitters.
    */
-  private postUpdated = new Subject<Post[]>();
+  private postUpdated = new Subject<{posts: Post[], postCount: number}>();
 
   constructor(private http: HttpClient, private router: Router) { }
 
-  getPosts() {
-    this.http.get<{ message: string, posts: any }>(BACKEND_URL)
+  getPosts(postsPerpage: number, currentPage:number) {
+    const queryParams = `?pageSize=${postsPerpage}&page=${currentPage}`;
+    this.http.get<{ message: string, posts: any, maxPosts: number }>(BACKEND_URL + queryParams)
       .pipe(map((data) => {
-        return data.posts.map(post => {
+        return { posts: data.posts.map(post => {
           return {
             title: post.title,
             content: post.content,
             id: post._id,
             imagePath: post.imagePath
-          }
-        });
+          };
+        }),
+        maxPosts: data.maxPosts};
       }))
-      .subscribe((mapedPosts) => {
-        this.posts = mapedPosts;
+      .subscribe((mapedPostsData) => {
+        this.posts = mapedPostsData.posts;
         //inform the app and other part of the app about this update
-        this.postUpdated.next([...this.posts]);
+        this.postUpdated.next({
+          posts: [...this.posts],
+          postCount: mapedPostsData.maxPosts
+        });
       });
     /*
     since array and objects are reference types(address),
@@ -75,13 +80,6 @@ export class PostService {
     this.http.post<{ message: string, post: Post }>(BACKEND_URL, postData)
       .subscribe(data => {
         console.log(data.message);
-        const post: Post = { id: data.post.id, title: title, content: content, imagePath: data.post.imagePath };
-        //update local data when receive a successful response
-        //push:feed values
-        this.posts.push(post);
-
-        //a copy of updated posts
-        this.postUpdated.next([...this.posts]);
         this.router.navigate(["/"]);
       });
   }
@@ -104,29 +102,11 @@ export class PostService {
     this.http.put(BACKEND_URL + id, postData)
       .subscribe(response => {
         console.log(response)
-        //to update the post on the frontend
-        const updatedPosts = [...this.posts];
-        const oldPostIndex = updatedPosts.findIndex(p=> p.id === id);
-        const post: Post = {
-          id: id,
-          title: title,
-          content: content,
-          imagePath: ""
-        }
-        updatedPosts[oldPostIndex] = post;
-        this.posts = updatedPosts;
-        this.postUpdated.next([...this.posts]);
         this.router.navigate(["/"]);
       });
   }
 
   deletePost(postId: string) {
-    this.http.delete(BACKEND_URL + postId)
-      .subscribe(() => {
-        const updatePosts = this.posts.filter(post => post.id !== postId);
-        this.posts = updatePosts;
-        this.postUpdated.next([...this.posts]);
-        console.log("Delete succeed!");
-      });
+    return this.http.delete(BACKEND_URL + postId);
   }
 }
