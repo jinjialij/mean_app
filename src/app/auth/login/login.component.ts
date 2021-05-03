@@ -12,11 +12,12 @@ export class LoginComponent implements OnInit {
   isLoading = false;
 
   onLogin(form: NgForm){
-    console.log(form.value);
     if (form.invalid){
       return;
     }
+    this.isLoading = true;
     this.authService.login(form.value.email, form.value.password);
+    console.log("login successfully");
   }
 
   constructor(public authService: AuthService) { }
