@@ -34,12 +34,14 @@ export class PostService {
             title: post.title,
             content: post.content,
             id: post._id,
-            imagePath: post.imagePath
+            imagePath: post.imagePath,
+            creator: post.creator
           };
         }),
         maxPosts: data.maxPosts};
       }))
       .subscribe((mapedPostsData) => {
+        // console.log(mapedPostsData);
         this.posts = mapedPostsData.posts;
         //inform the app and other part of the app about this update
         this.postUpdated.next({
@@ -64,7 +66,13 @@ export class PostService {
     you can't return inside of a subscription, you need to return synchronously
     so that means you can't return in a place which will run sometime in the future. */
     // return { ...this.posts.find(p => p.id === postId) };
-    return this.http.get<{_id: string, title: string, content: string, imagePath: string }>(BACKEND_URL + postId);
+    return this.http.get<{
+      _id: string,
+      title: string,
+      content: string,
+      imagePath: string,
+      creator: string
+    }>(BACKEND_URL + postId);
   }
 
   //Access updated posts but can't emit outside this service
@@ -97,7 +105,9 @@ export class PostService {
         id: id,
         title: title,
         content: content,
-        imagePath: image };
+        imagePath: image,
+        creator: null
+      };
     }
     this.http.put(BACKEND_URL + id, postData)
       .subscribe(response => {
