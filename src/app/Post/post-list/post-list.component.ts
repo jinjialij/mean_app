@@ -16,6 +16,7 @@ export class PostListComponent implements OnInit, OnDestroy {
   posts: Post[] = [];
   isLoading = false;
   userIsAuthenticated = false;
+  userId: string;
   private postsSub : Subscription;
   private authStatusSub : Subscription;
   totalPosts = 0;
@@ -29,7 +30,8 @@ export class PostListComponent implements OnInit, OnDestroy {
     this.isLoading = true;
     //this.postService is created by the constructor(public)
     this.postService.getPosts(this.postsPerPage, this.currentPage);
-    /*OnDestory: Need to cancel this subscription
+    this.userId = this.authService.getUserId();
+    /* OnDestory: Need to cancel this subscription
     when this component is teared down to avoid memory leak */
     this.postsSub = this.postService.getPostUpdateListener()
       .subscribe((postData: { posts: Post[], postCount: number}) => {
@@ -41,6 +43,7 @@ export class PostListComponent implements OnInit, OnDestroy {
     this.authStatusSub = this.authService.getAuthStatusListener()
     .subscribe(isAuthenticated => {
       this.userIsAuthenticated = isAuthenticated;
+      this.userId = this.authService.getUserId();
     });
   }
 
