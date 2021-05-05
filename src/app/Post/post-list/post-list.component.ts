@@ -2,6 +2,7 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Subscription } from 'rxjs';
 
 import { Post } from './post.model';
+import { Account } from '../../auth/account.model';
 import { PostService } from '../post-service/post.service';
 import { PageEvent } from '@angular/material/paginator';
 import { AuthService } from 'src/app/auth/auth.service';
@@ -19,6 +20,7 @@ export class PostListComponent implements OnInit, OnDestroy {
   userId: string;
   private postsSub : Subscription;
   private authStatusSub : Subscription;
+  private accounts: Account[];
   totalPosts = 0;
   postsPerPage = 2;
   currentPage = 1;
@@ -45,6 +47,8 @@ export class PostListComponent implements OnInit, OnDestroy {
       this.userIsAuthenticated = isAuthenticated;
       this.userId = this.authService.getUserId();
     });
+
+    this.accounts = this.authService.getAccounts();
   }
 
   //Destory subscription
@@ -64,7 +68,16 @@ export class PostListComponent implements OnInit, OnDestroy {
     this.isLoading = true;
     this.postService.deletePost(postId).subscribe(()=>{
       this.postService.getPosts(this.postsPerPage, this.currentPage);
+    }, () => {
+      this.isLoading = false;
     });
   }
 
+  getUserEmailById(userId: string){
+    for (let element in this.accounts){
+      if (this.accounts[element].id === userId) {
+        return this.accounts[element].email;
+      }
+    }
+  }
 }

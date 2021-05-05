@@ -1,10 +1,15 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { MatDialog } from "@angular/material/dialog";
 import { ActivatedRoute, ParamMap } from '@angular/router';
 import { Post } from '../post-list/post.model';
 import { mimeType } from './mime-type.validator';
+import { Subscription } from 'rxjs';
 
 import { PostService } from '../post-service/post.service';
+import { AuthService } from 'src/app/auth/auth.service';
+
+import { ErrorComponent } from "../../error/error.component";
 
 enum Mode {
   Create = "CREATE",
@@ -17,21 +22,34 @@ enum Mode {
   styleUrls: ['./post-create.component.css']
 })
 
-export class PostCreateComponent implements OnInit {
-  constructor(public postservice: PostService, public route: ActivatedRoute) { }
+export class PostCreateComponent implements OnInit, OnDestroy {
   post: Post;
   isLoading = false;
   private mode = Mode.Create;
   private postId: string;
+  private authStatusSub: Subscription;
   form: FormGroup;
   imagePreview: string;
 
+  constructor(
+    public postservice: PostService,
+    public route: ActivatedRoute,
+    private authService: AuthService,
+    private dialog: MatDialog) { }
+
   ngOnInit(): void {
+    this.authStatusSub = this.authService.getAuthStatusListener().subscribe(
+      authStatus => {
+        this.isLoading = false;
+      }
+    );
+
     this.form = new FormGroup({
       title: new FormControl(null, { validators: [Validators.required, Validators.minLength(3)] }),
       content: new FormControl(null, { validators: [Validators.required] }),
       image: new FormControl(null, { validators: [Validators.required], asyncValidators: [mimeType] })
     });
+
     //By subscribe the route paramMap, we can listen to changes in the route url
     //or in the parameters
     //To find if there is postId parameter in router or not
@@ -74,7 +92,14 @@ export class PostCreateComponent implements OnInit {
   }
 
   onSavePost() {
-    if (this.form.invalid) { return; }
+    if (this.form.get('image').value == '' || this.form.get('image').value == null) {
+      this.dialog.open(ErrorComponent, {data: {message: "Please upload an image files"}});
+      return;
+    }
+
+    if (this.form.invalid) {
+      return;
+    }
     this.isLoading = true;
     if (this.mode === Mode.Create) {
       this.postservice.addPost(
@@ -90,5 +115,9 @@ export class PostCreateComponent implements OnInit {
     }
 
     this.form.reset();
+  }
+
+  ngOnDestroy (){
+    this.authStatusSub.unsubscribe();
   }
 }
