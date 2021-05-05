@@ -57,13 +57,33 @@ router.post("/login", (req, res, next) =>{
     res.status(200).json({
       token: token,
       expiresIn: 3600,
-      userId: fetchedUser._id
+      userId: fetchedUser._id,
+      email: fetchedUser.email
     });
   })
   .catch(err => {
     console.log(err);
     return res.status(401).json({
       message: "Invalid password"
+    });
+  });
+});
+
+router.get("", (req, res, next)=>{
+  User.find().then(result => {
+    let accounts = [];
+    if (result) {
+      for (let user of result) {
+        const account = {id: user._id, email: user.email};
+        accounts.push(account);
+      }
+      res.status(200).json(accounts);
+    } else {
+      res.status(404).json({message: "Users cannot be found!"});
+    }
+  }).catch(error => {
+    res.status(500).json({
+      message: "Failed to find any user!"
     });
   });
 });
