@@ -47,6 +47,11 @@ router.post("",
         id: createdPost._id
       }
     });
+  })
+  .catch(error => {
+    res.status(500).json({
+      message: "Failed to create a post!"
+    });
   });
 });
 
@@ -76,6 +81,11 @@ router.put("/:id",
     res.status(401).json({
       message: 'You are not authorized to update this post!'
     });
+  })
+  .catch(error => {
+    res.status(500).json({
+      message: "Failed to update the post!"
+    });
   });
 });
 
@@ -102,6 +112,11 @@ router.get("", (req, res, next) => {
       posts: fetchedPosts,
       maxPosts: count
     });
+  })
+  .catch(error => {
+    res.status(500).json({
+      message: "Failed to fetch posts!"
+    });
   });
 });
 
@@ -113,7 +128,11 @@ router.get("/:id", (req, res, next) => {
     } else {
       res.status(404).json({message: "Post not found!"});
     }
-  })
+  }).catch(error => {
+    res.status(500).json({
+      message: "Failed to find the post!"
+    });
+  });
 });
 
 router.delete("/:id", checkAuth, (req, res, next) => {
@@ -125,6 +144,11 @@ router.delete("/:id", checkAuth, (req, res, next) => {
     }
     res.status(401).json({
       message: 'You are not authorized to delete this post!'
+    })
+    .catch(error => {
+      res.status(500).json({
+        message: "Failed to delete the post!"
+      });
     });
   });
 

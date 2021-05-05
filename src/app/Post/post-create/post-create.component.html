@@ -4,7 +4,7 @@
     <mat-form-field>
       <input matInput placeholder="Post Title" type="text"
        formControlName="title">
-      <mat-error *ngIf="form.get('title').invalid">Please enter a title</mat-error>
+      <mat-error *ngIf="form.get('title').invalid">Please enter a title with a minimum length three words</mat-error>
     </mat-form-field>
     <mat-form-field>
       <!-- Note: [ngModel]="post?.content"
@@ -16,11 +16,15 @@
     <div>
       <button mat-stroked-button type="button" (click)="filePick.click()" >Pick image</button>
       <input type="file" #filePick (change)="onImagePicked($event)" id="filePicker">
+      <!-- <mat-error *ngIf="form.get('image').value== ''">Please upload an image files</mat-error> -->
+
     </div>
     <div class="image-preview" *ngIf="imagePreview!== '' && imagePreview && form.get('image').valid">
       <img [src]="imagePreview" [alt]="form.get('title').value">
+
       <!-- <mat-error *ngIf="!form.get('image').valid">Only support image files</mat-error> -->
     </div>
+
     <button type="submit" mat-raised-button color="primary">Save Post</button>
   </form>
 

@@ -20,7 +20,7 @@ router.post("/signup", (req, res, next)=>{
       });
     }).catch(err => {
       res.status(500).json({
-        error:err
+        message: "Invalid email. This email has been used. Please try another one."
       });
     });
   });
@@ -33,7 +33,7 @@ router.post("/login", (req, res, next) =>{
     //Cannot find the user
     if (!user){
       return res.status(401).json({
-        message: "Auth failed: no such user"
+        message: "Cannot find this user email, please try again."
       });
     }
     fetchedUser = user;
@@ -44,7 +44,7 @@ router.post("/login", (req, res, next) =>{
     // console.log(result);
     if (!result){
       return res.status(401).json({
-        message: "Auth failed: invalid password"
+        message: "Invalid password"
       });
     }
     //create jwt token
@@ -63,7 +63,7 @@ router.post("/login", (req, res, next) =>{
   .catch(err => {
     console.log(err);
     return res.status(401).json({
-      message: "Auth failed: invalid password"
+      message: "Invalid password"
     });
   });
 });
