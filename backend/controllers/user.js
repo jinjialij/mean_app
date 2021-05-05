@@ -47,7 +47,7 @@ exports.userLogin = (req, res, next) =>{
     //create jwt token
     const token = jwt.sign(
       {email: fetchedUser.email, userId: fetchedUser._id},
-      'my_secret_pk_panda_is_cute',
+      process.env.JWT_KEY,
       {expiresIn: "1h"}
     );
     // console.log(token);
