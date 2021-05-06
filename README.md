@@ -15,5 +15,5 @@ Useful docs to host on Heroku:
 ## To deploy to Heroku using Heroku CLI
 
 For an existing Heroku app:
-`heroku git:remote -a post-simplely`
+`heroku git:remote -a branchname`
 `git push heroku master/main`
