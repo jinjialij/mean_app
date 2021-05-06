@@ -1,9 +1,6 @@
 {
   "name": "simple-post",
   "version": "0.0.0",
-  "scripts": {
-    "postinstall": "ng build --output-path dist"
-  },
   "private": true,
   "dependencies": {
     "bcrypt": "^5.0.1",
