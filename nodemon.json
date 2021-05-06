@@ -1,7 +1,0 @@
-{
-  "env": {
-    "MONGO_ALTAS_USERNAME": "jin",
-    "MONGO_ALTAS_PW": "U7ybI2pG8nghu509",
-    "JWT_KEY": "my_secret_pk_panda_is_cute"
-  }
-}
