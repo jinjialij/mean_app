@@ -3,14 +3,11 @@
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 11.0.7.
 
 A running version of the application can accesss through this url:[http://instantpost-env.eba-aq89pgqn.us-east-2.elasticbeanstalk.com/]
+The app is host on AWS Elastic Beanstalk as an intergrated app.
 
 ## Development server
 
 Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The app will automatically reload if you change any of the source files.
-
-## Development DB connection
-
-Create a `.env` file to store username and password. Then run `npm run start:server`
 
 ## npm Packages
 
