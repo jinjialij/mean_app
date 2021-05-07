@@ -2,7 +2,7 @@
 
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 11.0.7.
 
-A running version of the application can accesss through this url:[https://simple-post-4b01f.web.app]
+A running version of the application can accesss through this url:[http://instantpost-env.eba-aq89pgqn.us-east-2.elasticbeanstalk.com/]
 
 ## Development server
 
